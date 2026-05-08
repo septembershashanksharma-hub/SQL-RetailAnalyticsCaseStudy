@@ -1,1 +1,56 @@
+ALTER TABLE sales_transaction
+RENAME COLUMN ï»¿TransactionID to TransactionID;
+
+ALTER TABLE customer_profiles
+RENAME COLUMN ï»¿CustomerID to CustomerID;
+
+ALTER TABLE product_inventory
+RENAME COLUMN ï»¿ProductID to ProductID;
+
+
+# Write a query to identify the number of duplicates in "sales_transaction" table. Also, create 
+# a separate table containing the unique values and remove the original table from the databases 
+# and replace the name of the new table with the original name.
+
+SELECT * 
+FROM sales_transaction;
+
+SELECT TransactionID, COUNT(*)
+FROM sales_transaction
+GROUP BY TransactionID
+HAVING COUNT(*)>1;
+
+
+CREATE TABLE sales_transation_II
+AS (SELECT DISTINCT TransactionID, CustomerID, ProductID, QuantityPurchased, TransactionDate, Price
+FROM sales_transaction);
+
+SELECT TransactionID, COUNT(*)
+FROM sales_transation_ii
+GROUP BY TransactionID
+HAVING COUNT(*)>1;
+
+DROP TABLE sales_transaction;
+
+# Write a query to identify the discrepancies in the price of the 
+# same product in "sales_transaction" and "product_inventory" tables. 
+# Also, update those discrepancies to match the price in both the tables.
+
+
+SELECT *
+FROM sales_transation_ii S
+LEFT JOIN product_inventory P ON S.ProductID = P.ProductID
+WHERE S.Price <> P.Price;
+
+SET SQL_SAFE_UPDATES = 0;
+
+UPDATE sales_transation_ii
+SET Price = 93.12
+WHERE Price = 9312;
+
+ALTER TABLE sales_transation_ii RENAME TO sales_transaction;
+
+SELECT *
+FROM sales_transaction S
+LEFT JOIN product_inventory P ON S.ProductID = P.ProductID;
 
